@@ -1,15 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import * as cheerio from 'cheerio';
 import { FileService } from './file.service';
 import { Readable } from 'stream';
 import * as sharp from 'sharp';
 import { assert } from 'src/utils/assert';
+import { HtmlFetchStrategy } from './fetch-strategies/html.fetch-strategy';
+import { GoogleFaviconFetchStrategy } from './fetch-strategies/google-favicon.fetch-strategy';
+import { FetchStrategy } from './fetch-strategies/interfaces/fetch-strategy.interface';
 
 const SUPPORTED_EXTENSIONS = ['png', 'svg', 'gif', 'ico']
 @Injectable()
 export class FaviconService {
-  constructor(private readonly fileService: FileService) {}
+  constructor(
+    private readonly fileService: FileService,
+    private readonly htmlFetchStrategy: HtmlFetchStrategy,
+    private readonly googleFaviconFetchStrategy: GoogleFaviconFetchStrategy
+  ) {}
 
   async fetchFaviconFromStorage(
     domainName: string,
@@ -51,42 +57,16 @@ export class FaviconService {
   }
 
   async _getFaviconFromSubDomain(subDomainName: string) {
-    const response = await axios
-      .get(subDomainName, {
-        timeout: 5000,
-        headers: {
-          Accept: '*/*',
-          'Accept-Encoding': 'gzip, deflate, br',
-          'user-agent':
-            'Mozilla/5.0 (iPad; CPU OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1',
-        },
-      })
-      .catch(() => null);
-
     let faviconUrls = [];
-    if (response) {
-      const html = response.data;
-      const redirectedUrl = response.request.res.responseUrl;
-      const baseRedirectedUrl =
-        new URL(redirectedUrl).protocol + '//' + new URL(redirectedUrl).host;
-
-      const faviconUrlsFromHtml = this._getFaviconUrlsFromHtml(
-        html,
-        baseRedirectedUrl,
-      );
-      faviconUrls = [
-        ...faviconUrlsFromHtml,
-        `${baseRedirectedUrl}/favicon.ico`,
+    const strategies: Array<FetchStrategy> =
+      [
+        this.htmlFetchStrategy,
+        this.googleFaviconFetchStrategy
       ];
-    }
 
-    const faviconUrlsFromGoogleFavicon =
-      await this._getFaviconUrlFromGoogleFavicon(subDomainName).catch(
-        () => null,
-      );
-
-    if (faviconUrlsFromGoogleFavicon) {
-      faviconUrls.push(faviconUrlsFromGoogleFavicon);
+    for (const strategy of strategies) {
+      const fetchedFaviconUrls = await strategy.fetchFaviconUrls(subDomainName);
+      faviconUrls = [...faviconUrls, ...fetchedFaviconUrls];
     }
 
     const faviconFiles = [];
@@ -174,54 +154,6 @@ export class FaviconService {
       width: bufferMetadata.width,
       height: bufferMetadata.height,
     };
-  }
-
-  _getFaviconUrlsFromHtml(html: string, baseUrl: string): string[] {
-    const $ = cheerio.load(html);
-    const faviconUrls = [];
-    $('link[rel=icon], link[rel="shortcut icon"]').each((i, icon) => {
-      const href = $(icon).attr('href');
-      faviconUrls.push(this._makeAbsoluteUrl(href, baseUrl));
-    });
-
-    $('meta[itemprop="image"]').each((i, icon) => {
-      const href = $(icon).attr('content');
-      faviconUrls.push(this._makeAbsoluteUrl(href, baseUrl));
-    });
-
-    return faviconUrls;
-  }
-
-  async _getFaviconUrlFromGoogleFavicon(
-    domainName: string,
-  ): Promise<string | null> {
-    const response = await axios.get(
-      `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${domainName}&size=64`,
-      {
-        headers: {
-          Cookie: '',
-          Connection: 'keep-alive',
-          'user-agent':
-            'Mozilla/5.0 (iPad; CPU OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1',
-        },
-        responseType: 'arraybuffer',
-      },
-    );
-    return response.headers['content-location'];
-  }
-
-  _makeAbsoluteUrl(url: string, baseUrl: string): string {
-    const trimmedBaseUrl = baseUrl.replace(/\/$/, '');
-    const absolutePattern = /^https?:\/\//i;
-    if (absolutePattern.test(url)) {
-      return url;
-    } else if (url.startsWith('//')) {
-      return `https:${url}`;
-    } else if (url.startsWith('/')) {
-      return `${trimmedBaseUrl}${url}`;
-    } else {
-      return `${trimmedBaseUrl}/${url}`;
-    }
   }
 
   _getFileExtension(url: string): string {
