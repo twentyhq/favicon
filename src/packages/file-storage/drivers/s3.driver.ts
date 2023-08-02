@@ -60,13 +60,16 @@ export class S3Driver implements StorageDriver {
       Key: `${params.folderPath}/${params.filename}`,
       Bucket: this.bucketName,
     });
-    const file = await this.s3Client.send(command);
+    try {
+      const file = await this.s3Client.send(command);
+      if (!file || !file.Body || !(file.Body instanceof Readable)) {
+        throw new Error('Unable to get file stream');
+      }
 
-    if (!file || !file.Body || !(file.Body instanceof Readable)) {
-      throw new Error('Unable to get file stream');
+      return Readable.from(file.Body);
+    } catch (error) {
+      return;
     }
-
-    return Readable.from(file.Body);
   }
 
   async checkBucketExists(args: HeadBucketCommandInput) {
