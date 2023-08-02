@@ -20,34 +20,36 @@ export class FaviconController {
     if (!this.faviconService.checkDomainIsValid(domainName)) {
       return res.status(400).send('Invalid domain');
     }
-    const existingFavicon = await this.faviconService.fetchFavicon(
+    const existingFavicon = await this.faviconService.fetchFaviconFromStorage(
       params.domainName,
     );
 
     if (existingFavicon) {
-      res.set({
-        'Content-Type': this.faviconService.computeResponseContentType(
-          existingFavicon.extension,
-        ),
-      });
-      return existingFavicon.file.pipe(res);
+      return this.withComputedResponseContentType(res, existingFavicon)
     }
 
     await this.faviconService.storeFavicon(params.domainName);
 
-    const newFavicon = await this.faviconService.fetchFavicon(
+    const newFavicon = await this.faviconService.fetchFaviconFromStorage(
       params.domainName,
     );
 
     if (newFavicon) {
-      res.set({
-        'Content-Type': this.faviconService.computeResponseContentType(
-          newFavicon.extension,
-        ),
-      });
-      return newFavicon.file.pipe(res);
+      return this.withComputedResponseContentType(res, newFavicon)
     }
 
     return res.status(400).send('Could not fetch favicon');
+  }
+
+  withComputedResponseContentType(
+    res: Response,
+    favicon: { extension: string; file: any }
+  ) {
+    res.set({
+      'Content-Type': this.faviconService.computeResponseContentType(
+        favicon.extension,
+      ),
+    });
+    return favicon.file.pipe(res);
   }
 }

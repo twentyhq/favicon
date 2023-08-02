@@ -6,51 +6,29 @@ import { Readable } from 'stream';
 import * as sharp from 'sharp';
 import { assert } from 'src/utils/assert';
 
+const SUPPORTED_EXTENSIONS = ['png', 'svg', 'gif', 'ico']
 @Injectable()
 export class FaviconService {
   constructor(private readonly fileService: FileService) {}
 
-  async fetchFavicon(
+  async fetchFaviconFromStorage(
     domainName: string,
-  ): Promise<{ extension: string; file: Readable } | null> {
-    const pngFavicon = await this.fileService.fetchFavicon({
-      domainName,
-      extension: 'png',
-    });
-    if (pngFavicon) {
-      return { file: pngFavicon, extension: 'png' };
+  ): Promise<{ file: Readable, extension: string } | null> {
+    for (const extension of SUPPORTED_EXTENSIONS) {
+      const favicon = await this.fileService.fetchFavicon({
+        domainName,
+        extension,
+      });
+      if (favicon) {
+        return { file: favicon, extension };
+      }
     }
-
-    const svgFavicon = await this.fileService.fetchFavicon({
-      domainName,
-      extension: 'svg',
-    });
-    if (svgFavicon) {
-      return { file: svgFavicon, extension: 'svg' };
-    }
-
-    const gifFavicon = await this.fileService.fetchFavicon({
-      domainName,
-      extension: 'gif',
-    });
-    if (gifFavicon) {
-      return { file: gifFavicon, extension: 'svg' };
-    }
-
-    const icoFavicon = await this.fileService.fetchFavicon({
-      domainName,
-      extension: 'ico',
-    });
-    if (icoFavicon) {
-      return { file: icoFavicon, extension: 'ico' };
-    }
-    return null;
   }
 
   async storeFavicon(domainName: string) {
     const url = `https://${domainName}`;
 
-    let favicon;
+    let favicon: { url: string; file: any; };
 
     favicon = await this._getFaviconFromSubDomain(url).catch(() => null);
     if (!favicon) {
@@ -110,8 +88,6 @@ export class FaviconService {
     if (faviconUrlsFromGoogleFavicon) {
       faviconUrls.push(faviconUrlsFromGoogleFavicon);
     }
-
-    console.log(faviconUrls);
 
     const faviconFiles = [];
     const faviconFetchPromises = faviconUrls.map(
