@@ -25,7 +25,7 @@ export class FaviconController {
     );
 
     if (existingFavicon) {
-      return this.withComputedResponseContentType(res, existingFavicon)
+      return this.returnWithComputedResponseContentType(res, existingFavicon)
     }
 
     await this.faviconService.storeFavicon(params.domainName);
@@ -35,13 +35,13 @@ export class FaviconController {
     );
 
     if (newFavicon) {
-      return this.withComputedResponseContentType(res, newFavicon)
+      return this.returnWithComputedResponseContentType(res, newFavicon)
     }
 
     return res.status(400).send('Could not fetch favicon');
   }
 
-  withComputedResponseContentType(
+  private returnWithComputedResponseContentType(
     res: Response,
     favicon: { extension: string; file: any }
   ) {
