@@ -73,40 +73,45 @@ export class FaviconService {
   }
 
   async _getFaviconFromSubDomain(subDomainName: string) {
-    const response = await axios.get(subDomainName, {
-      timeout: 5000,
-      headers: {
-        Cookie: '',
-        Accept: 'application/json, text/plain, */*',
-        Connection: 'keep-alive',
-        'user-agent':
-          'Mozilla/5.0 (iPad; CPU OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1',
-      },
-    });
+    const response = await axios
+      .get(subDomainName, {
+        timeout: 5000,
+        headers: {
+          Accept: '*/*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'user-agent':
+            'Mozilla/5.0 (iPad; CPU OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1',
+        },
+      })
+      .catch(() => null);
 
-    const html = response.data;
-    const redirectedUrl = response.request.res.responseUrl;
-    const baseRedirectedUrl =
-      new URL(redirectedUrl).protocol + '//' + new URL(redirectedUrl).host;
+    let faviconUrls = [];
+    if (response) {
+      const html = response.data;
+      const redirectedUrl = response.request.res.responseUrl;
+      const baseRedirectedUrl =
+        new URL(redirectedUrl).protocol + '//' + new URL(redirectedUrl).host;
 
-    const faviconUrlsFromHtml = this._getFaviconUrlsFromHtml(
-      html,
-      baseRedirectedUrl,
-    );
+      const faviconUrlsFromHtml = this._getFaviconUrlsFromHtml(
+        html,
+        baseRedirectedUrl,
+      );
+      faviconUrls = [
+        ...faviconUrlsFromHtml,
+        `${baseRedirectedUrl}/favicon.ico`,
+      ];
+    }
 
     const faviconUrlsFromGoogleFavicon =
       await this._getFaviconUrlFromGoogleFavicon(subDomainName).catch(
         () => null,
       );
 
-    const faviconUrls = [
-      ...faviconUrlsFromHtml,
-      `${baseRedirectedUrl}/favicon.ico`,
-    ];
-
     if (faviconUrlsFromGoogleFavicon) {
       faviconUrls.push(faviconUrlsFromGoogleFavicon);
     }
+
+    console.log(faviconUrls);
 
     const faviconFiles = [];
     const faviconFetchPromises = faviconUrls.map(
@@ -157,8 +162,8 @@ export class FaviconService {
   ): Promise<{ file: Buffer; width: number; height: number; url: string }> {
     const response = await axios.get(url, {
       headers: {
-        Cookie: '',
-        Connection: 'keep-alive',
+        Accept: '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
         'user-agent':
           'Mozilla/5.0 (iPad; CPU OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1',
       },
