@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
 
-import { FetchStrategy } from "./interfaces/fetch-strategy.interface";
+import { UrlFetcher } from './interfaces/url-fetcher.interface';
 
-export class GoogleFaviconFetchStrategy implements FetchStrategy {
+export class GoogleFaviconUrlFetcher implements UrlFetcher {
   async fetchFaviconUrls(subDomainName: string): Promise<string[]> {
     const response = await axios.get(
       `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${subDomainName}&size=64`,
@@ -16,8 +16,6 @@ export class GoogleFaviconFetchStrategy implements FetchStrategy {
         responseType: 'arraybuffer',
       },
     );
-    return [
-      response.headers['content-location']
-    ];
+    return [response.headers['content-location']];
   }
 }

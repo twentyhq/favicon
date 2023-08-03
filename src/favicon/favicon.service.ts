@@ -1,87 +1,80 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { FileService } from './file.service';
 import { Readable } from 'stream';
 import * as sharp from 'sharp';
-import { assert } from 'src/utils/assert';
-import { HtmlFetchStrategy } from './fetch-strategies/html.fetch-strategy';
-import { GoogleFaviconFetchStrategy } from './fetch-strategies/google-favicon.fetch-strategy';
-import { FetchStrategy } from './fetch-strategies/interfaces/fetch-strategy.interface';
 
-const SUPPORTED_EXTENSIONS = ['png', 'svg', 'gif', 'ico']
+import { FileService } from './file.service';
+import { HtmlUrlFetcher } from './url-fetcher/html.url-fetcher';
+import { GoogleFaviconUrlFetcher } from './url-fetcher/google-favicon.url-fetcher';
+import { UrlFetcher } from './url-fetcher/interfaces/url-fetcher.interface';
+import { SUPPORTED_SIZES } from './favicon.constants';
+import { Favicon } from './interfaces/favicon.interface';
+import { ImageManipulation } from './utils/image-manipulation';
+
 @Injectable()
 export class FaviconService {
   constructor(
     private readonly fileService: FileService,
-    private readonly htmlFetchStrategy: HtmlFetchStrategy,
-    private readonly googleFaviconFetchStrategy: GoogleFaviconFetchStrategy
+    private readonly htmlUrlFetcher: HtmlUrlFetcher,
+    private readonly googleFaviconUrlFetcher: GoogleFaviconUrlFetcher,
   ) {}
 
   async fetchFaviconFromStorage(
     domainName: string,
-  ): Promise<{ file: Readable, extension: string } | null> {
-    for (const extension of SUPPORTED_EXTENSIONS) {
-      const favicon = await this.fileService.fetchFavicon({
-        domainName,
-        extension,
-      });
-      if (favicon) {
-        return { file: favicon, extension };
-      }
-    }
+    size: string,
+  ): Promise<Readable> {
+    return await this.fileService.fetchFavicon({
+      domainName,
+      size,
+    });
   }
 
   async storeFavicon(domainName: string) {
     const url = `https://${domainName}`;
 
-    let favicon: { url: string; file: any; };
+    let faviconsFromSubDomain;
 
-    favicon = await this._getFaviconFromSubDomain(url).catch(() => null);
-    if (!favicon) {
+    faviconsFromSubDomain = await this.getFaviconFromSubDomain(url).catch(
+      () => [],
+    );
+
+    if (faviconsFromSubDomain.length == 0) {
       const alternativeUrl = `https://www.${domainName}`;
-      favicon = await this._getFaviconFromSubDomain(alternativeUrl);
+      faviconsFromSubDomain = await this.getFaviconFromSubDomain(
+        alternativeUrl,
+      );
     }
 
-    if (!favicon) {
+    if (faviconsFromSubDomain.length == 0) {
       return;
     }
-
-    const extension = this._getFileExtension(favicon.url);
-    assert(extension, 'Extension could not be determined');
-
-    await this.fileService.storeFavicon({
-      domainName,
-      file: favicon.file,
-      extension: extension,
-    });
+    for (const favicon of faviconsFromSubDomain) {
+      await this.fileService.storeFavicon({
+        domainName,
+        file: favicon.file,
+        size: favicon.width,
+      });
+    }
   }
 
-  async _getFaviconFromSubDomain(subDomainName: string) {
-    let faviconUrls = [];
-    const strategies: Array<FetchStrategy> =
-      [
-        this.htmlFetchStrategy,
-        this.googleFaviconFetchStrategy
-      ];
+  private async getFaviconFromSubDomain(domainName: string) {
+    let faviconUrls: Array<string> = [];
+    const strategies: Array<UrlFetcher> = [
+      this.htmlUrlFetcher,
+      this.googleFaviconUrlFetcher,
+    ];
 
     for (const strategy of strategies) {
-      const fetchedFaviconUrls = await strategy.fetchFaviconUrls(subDomainName);
+      const fetchedFaviconUrls = await strategy.fetchFaviconUrls(domainName);
       faviconUrls = [...faviconUrls, ...fetchedFaviconUrls];
     }
 
-    const faviconFiles = [];
-    const faviconFetchPromises = faviconUrls.map(
-      (
-        url,
-      ): Promise<{
-        file: Buffer;
-        width: number;
-        height: number;
-        url: string;
-      }> => {
-        return this._getImageFromUrl(url).catch(() => null);
-      },
-    );
+    console.log(faviconUrls);
+
+    const faviconFiles: Array<Favicon> = [];
+    const faviconFetchPromises = faviconUrls.map((url): Promise<Favicon> => {
+      return this.getImageFromUrl(url).catch(() => null);
+    });
 
     for (const promise of faviconFetchPromises) {
       await new Promise((r) => setTimeout(r, 500));
@@ -89,33 +82,35 @@ export class FaviconService {
       faviconFiles.push(faviconFile);
     }
 
-    const largerFaviconFile = faviconFiles
-      .filter((faviconFile) => faviconFile !== null)
-      .reduce(
-        (prev, current) => {
-          if (
-            current.width > prev.width &&
-            current.width === current.height &&
-            current.width >= 32
-          ) {
-            return current;
-          } else {
-            return prev;
-          }
-        },
-        { width: 0, height: 0, file: Buffer.from(''), url: '' },
-      );
+    const uniquefaviconFiles = this.uniqueFaviconFiles(faviconFiles);
 
-    if (largerFaviconFile.width === 0) {
-      return;
+    if (uniquefaviconFiles.length == 0) {
+      return [];
     }
 
-    return largerFaviconFile;
+    const convertedFiles = [];
+
+    for (const targetSize of SUPPORTED_SIZES) {
+      const largestFaviconFile = ImageManipulation.getLargestFaviconFile(
+        uniquefaviconFiles,
+        targetSize,
+      );
+      if (largestFaviconFile == null || largestFaviconFile.width === 0) {
+        continue;
+      }
+      const convertedFile =
+        await ImageManipulation.convertFaviconFileToPngAndResize(
+          largestFaviconFile,
+          targetSize,
+        );
+
+      convertedFiles.push(convertedFile);
+    }
+
+    return convertedFiles;
   }
 
-  async _getImageFromUrl(
-    url: string,
-  ): Promise<{ file: Buffer; width: number; height: number; url: string }> {
+  private async getImageFromUrl(url: string): Promise<Favicon> {
     const response = await axios.get(url, {
       headers: {
         Accept: '*/*',
@@ -128,56 +123,33 @@ export class FaviconService {
 
     const buffer = Buffer.from(response.data, 'utf-8');
 
-    const extension = this._getFileExtension(url);
-    if (extension === 'svg') {
-      return {
-        url: url,
-        file: buffer,
-        width: 256,
-        height: 256,
-      };
-    }
-
-    if (extension === 'ico') {
-      return {
-        url: url,
-        file: buffer,
-        width: 32,
-        height: 32,
-      };
+    if (ImageManipulation.isIcoFile(buffer)) {
+      return;
     }
 
     const bufferMetadata = await sharp(buffer).metadata();
+
     return {
       url: url,
       file: buffer,
       width: bufferMetadata.width,
       height: bufferMetadata.height,
+      format: bufferMetadata.format,
     };
   }
 
-  _getFileExtension(url: string): string {
-    return url.split(/[#?]/)[0].split('.').pop().trim();
-  }
-
-  checkDomainIsValid(domainName: string) {
-    const domainPattern =
-      /^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$/;
-    return domainPattern.test(domainName);
-  }
-
-  computeResponseContentType(extension: string) {
-    switch (extension) {
-      case 'svg':
-        return 'image/svg+xml';
-      case 'png':
-        return 'image/png';
-      case 'gif':
-        return 'image/gif';
-      case 'ico':
-        return 'image/x-icon';
-      default:
-        return 'image/png';
-    }
+  private uniqueFaviconFiles(faviconFiles: Array<Favicon>): Array<Favicon> {
+    return [
+      ...new Map(
+        faviconFiles
+          .filter(
+            (faviconFile) =>
+              faviconFile !== null &&
+              faviconFile !== undefined &&
+              faviconFile.width === faviconFile.height,
+          )
+          .map((faviconFile) => [faviconFile.width, faviconFile]),
+      ).values(),
+    ];
   }
 }
