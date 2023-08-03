@@ -13,13 +13,13 @@ export class FaviconController {
     return;
   }
 
-  @Get(':domainName/:size')
+  @Get(':domainName/:size?')
   async getFaviconWithSize(
     @Param() params: { domainName: string; size: string },
     @Res() res: Response,
   ) {
     const domainName = params.domainName;
-    const size = params.size;
+    const size = params.size ?? DEFAULT_SIZE;
     if (!this.checkDomainIsValid(domainName)) {
       return res.status(400).send('Invalid domain');
     }
@@ -28,7 +28,7 @@ export class FaviconController {
     }
     const existingFavicon = await this.faviconService.fetchFaviconFromStorage(
       params.domainName,
-      size,
+      parseInt(size),
     );
 
     if (existingFavicon) {
@@ -39,7 +39,7 @@ export class FaviconController {
 
     const newFavicon = await this.faviconService.fetchFaviconFromStorage(
       params.domainName,
-      size,
+      parseInt(size),
     );
 
     if (newFavicon) {
@@ -47,17 +47,6 @@ export class FaviconController {
     }
 
     return res.status(400).send('Could not fetch favicon');
-  }
-
-  @Get(':domainName')
-  async getFavicon(
-    @Param() params: { domainName: string },
-    @Res() res: Response,
-  ) {
-    return this.getFaviconWithSize(
-      { domainName: params.domainName, size: DEFAULT_SIZE },
-      res,
-    );
   }
 
   private returnWithComputedResponseContentType(

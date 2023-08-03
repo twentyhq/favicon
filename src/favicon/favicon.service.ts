@@ -21,12 +21,29 @@ export class FaviconService {
 
   async fetchFaviconFromStorage(
     domainName: string,
-    size: string,
+    size: number,
   ): Promise<Readable> {
-    return await this.fileService.fetchFavicon({
+    const exactSizeFavicon = await this.fileService.fetchFavicon({
       domainName,
-      size,
+      size: size.toString(),
     });
+
+    if (exactSizeFavicon) {
+      return exactSizeFavicon;
+    }
+
+    for (const supportedSize of SUPPORTED_SIZES.sort((a, b) => b - a)) {
+      if (supportedSize <= size) {
+        const favicon = await this.fileService.fetchFavicon({
+          domainName,
+          size: supportedSize.toString(),
+        });
+
+        if (favicon) {
+          return favicon;
+        }
+      }
+    }
   }
 
   async storeFavicon(domainName: string) {
