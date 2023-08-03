@@ -68,6 +68,7 @@ export class S3Driver implements StorageDriver {
 
       return Readable.from(file.Body);
     } catch (error) {
+      console.log(error);
       return;
     }
   }

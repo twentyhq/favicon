@@ -1,9 +1,9 @@
-import axios from "axios";
+import axios from 'axios';
 import * as cheerio from 'cheerio';
 
-import { FetchStrategy } from "./interfaces/fetch-strategy.interface";
+import { UrlFetcher } from './interfaces/url-fetcher.interface';
 
-export class HtmlFetchStrategy implements FetchStrategy {
+export class HtmlUrlFetcher implements UrlFetcher {
   async fetchFaviconUrls(subDomainName: string): Promise<string[]> {
     const response = await axios
       .get(subDomainName, {
@@ -27,18 +27,17 @@ export class HtmlFetchStrategy implements FetchStrategy {
         baseRedirectedUrl,
       );
 
-      return [
-        ...faviconUrlsFromHtml,
-        `${baseRedirectedUrl}/favicon.ico`,
-      ];
+      return [...faviconUrlsFromHtml, `${baseRedirectedUrl}/favicon.ico`];
     }
-    return []
+    return [];
   }
 
   private getFaviconUrlsFromHtml(html: string, baseUrl: string): string[] {
     const $ = cheerio.load(html);
     const faviconUrls = [];
-    $('link[rel=icon], link[rel="shortcut icon"]').each((i, icon) => {
+    $(
+      'link[rel=icon], link[rel="shortcut icon"], link[rel="apple-touch-icon"]',
+    ).each((i, icon) => {
       const href = $(icon).attr('href');
       faviconUrls.push(this.makeAbsoluteUrl(href, baseUrl));
     });
@@ -64,5 +63,4 @@ export class HtmlFetchStrategy implements FetchStrategy {
       return `${trimmedBaseUrl}/${url}`;
     }
   }
-
 }

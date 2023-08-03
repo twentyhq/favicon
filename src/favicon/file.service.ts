@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { fromBuffer } from 'file-type';
 
 import { FileStorageService } from 'src/packages/file-storage/file-storage.service';
 import { Readable } from 'stream';
@@ -11,33 +10,30 @@ export class FileService {
   async storeFavicon({
     domainName,
     file,
-    extension,
+    size,
   }: {
     file: Buffer;
     domainName: string;
-    extension: string;
+    size: string;
   }) {
-    const { mime } =
-      extension === 'svg' ? { mime: 'svg' } : await fromBuffer(file);
-
     await this.fileStorage.write({
       file,
-      name: `${domainName}.${extension}`,
-      mimeType: mime,
-      folder: 'favicon',
+      name: `${size}.png`,
+      mimeType: 'image/png',
+      folder: `favicon/${domainName}`,
     });
   }
 
   fetchFavicon({
     domainName,
-    extension,
+    size,
   }: {
     domainName: string;
-    extension: string;
+    size: string;
   }): Promise<Readable> {
     return this.fileStorage.read({
-      folderPath: 'favicon',
-      filename: `${domainName}.${extension}`,
+      folderPath: `favicon/${domainName}`,
+      filename: `${size}.png`,
     });
   }
 }
