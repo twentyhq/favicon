@@ -1,4 +1,4 @@
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 
 import { Favicon } from '../interfaces/favicon.interface';
 
@@ -10,6 +10,7 @@ export class ImageManipulation {
     const largestFaviconFile = faviconFiles.reduce((prev, current) => {
       return current.width > prev.width ? current : prev;
     });
+
     if (
       largestFaviconFile.format !== 'svg' &&
       largestFaviconFile.width < size

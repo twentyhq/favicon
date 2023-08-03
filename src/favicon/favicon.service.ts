@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { Readable } from 'stream';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 
 import { FileService } from './file.service';
 import { HtmlUrlFetcher } from './url-fetcher/html.url-fetcher';
@@ -10,6 +10,7 @@ import { UrlFetcher } from './url-fetcher/interfaces/url-fetcher.interface';
 import { SUPPORTED_SIZES } from './favicon.constants';
 import { Favicon } from './interfaces/favicon.interface';
 import { ImageManipulation } from './utils/image-manipulation';
+import icoToPng from 'ico-to-png';
 
 @Injectable()
 export class FaviconService {
@@ -83,14 +84,17 @@ export class FaviconService {
 
     for (const strategy of strategies) {
       const fetchedFaviconUrls = await strategy.fetchFaviconUrls(domainName);
+
       faviconUrls = [...faviconUrls, ...fetchedFaviconUrls];
     }
-
     console.log(faviconUrls);
 
     const faviconFiles: Array<Favicon> = [];
     const faviconFetchPromises = faviconUrls.map((url): Promise<Favicon> => {
-      return this.getImageFromUrl(url).catch(() => null);
+      return this.getImageFromUrl(url).catch((error) => {
+        console.error(error);
+        return null;
+      });
     });
 
     for (const promise of faviconFetchPromises) {
@@ -138,12 +142,10 @@ export class FaviconService {
       responseType: 'arraybuffer',
     });
 
-    const buffer = Buffer.from(response.data, 'utf-8');
-
+    let buffer = Buffer.from(response.data, 'utf-8');
     if (ImageManipulation.isIcoFile(buffer)) {
-      return;
+      buffer = await icoToPng(buffer, 128);
     }
-
     const bufferMetadata = await sharp(buffer).metadata();
 
     return {

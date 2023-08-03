@@ -35,7 +35,9 @@ export class HtmlUrlFetcher implements UrlFetcher {
   private getFaviconUrlsFromHtml(html: string, baseUrl: string): string[] {
     const $ = cheerio.load(html);
     const faviconUrls = [];
-    $('link[rel=icon], link[rel="shortcut icon"]').each((i, icon) => {
+    $(
+      'link[rel=icon], link[rel="shortcut icon"], link[rel="apple-touch-icon"]',
+    ).each((i, icon) => {
       const href = $(icon).attr('href');
       faviconUrls.push(this.makeAbsoluteUrl(href, baseUrl));
     });

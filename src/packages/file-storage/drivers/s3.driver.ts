@@ -56,7 +56,6 @@ export class S3Driver implements StorageDriver {
     folderPath: string;
     filename: string;
   }): Promise<Readable> {
-    console.log(params);
     const command = new GetObjectCommand({
       Key: `${params.folderPath}/${params.filename}`,
       Bucket: this.bucketName,
