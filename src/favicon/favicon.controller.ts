@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Get, Param, Redirect, Res } from '@nestjs/common';
 import { FaviconService } from './favicon.service';
 import { Response } from 'express';
 import { DEFAULT_SIZE, SUPPORTED_SIZES } from './favicon.constants';
@@ -7,6 +7,21 @@ import { Readable } from 'stream';
 @Controller()
 export class FaviconController {
   constructor(private readonly faviconService: FaviconService) {}
+
+  @Get()
+  @Redirect('https://github.com/twentyhq/favicon/blob/main/README.md', 301)
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  redirectToReadme() {}
+
+  @Get('/health')
+  checkHealth(@Res() res: Response) {
+    res.status(200).send();
+  }
+
+  @Get('/healthz')
+  checkHealthz(@Res() res: Response) {
+    res.status(200).send();
+  }
 
   @Get('/favicon.ico')
   async getOwnFavicon() {
