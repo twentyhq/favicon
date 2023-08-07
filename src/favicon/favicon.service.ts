@@ -165,7 +165,7 @@ export class FaviconService {
             (faviconFile) =>
               faviconFile !== null &&
               faviconFile !== undefined &&
-              faviconFile.width === faviconFile.height,
+              ImageManipulation.isAlmostSquare(faviconFile),
           )
           .map((faviconFile) => [faviconFile.width, faviconFile]),
       ).values(),

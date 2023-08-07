@@ -43,4 +43,14 @@ export class ImageManipulation {
     const icoSignature = Buffer.from([0, 0, 1, 0]); // The first four bytes of ICO format
     return buffer.subarray(0, 4).equals(icoSignature);
   }
+
+  static isAlmostSquare(favicon: Favicon): boolean {
+    if (favicon.height === 0 || favicon.width === 0) {
+      return false;
+    }
+    return (
+      favicon.width / favicon.height > 0.9 &&
+      favicon.width / favicon.height < 1.1
+    );
+  }
 }
