@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "cli": "node dist/cli",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -33,6 +34,7 @@
     "class-validator": "^0.14.0",
     "file-type": "16",
     "ico-to-png": "^0.2.1",
+    "nest-commander": "^3.11.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "sharp": "^0.32.4",
