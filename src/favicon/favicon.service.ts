@@ -112,16 +112,20 @@ export class FaviconService {
     const convertedFiles = [];
 
     for (const targetSize of SUPPORTED_SIZES) {
-      const largestFaviconFile = ImageManipulation.getLargestFaviconFile(
-        uniquefaviconFiles,
-        targetSize,
-      );
-      if (largestFaviconFile == null || largestFaviconFile.width === 0) {
+      const smallestLargerThanSize =
+        ImageManipulation.getSmallestFaviconLargerThanSize(
+          uniquefaviconFiles,
+          targetSize,
+        );
+      if (
+        smallestLargerThanSize == null ||
+        smallestLargerThanSize.width === 0
+      ) {
         continue;
       }
       const convertedFile =
         await ImageManipulation.convertFaviconFileToPngAndResize(
-          largestFaviconFile,
+          smallestLargerThanSize,
           targetSize,
         );
 

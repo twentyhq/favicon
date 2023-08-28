@@ -20,6 +20,25 @@ export class ImageManipulation {
     return largestFaviconFile;
   }
 
+  static getSmallestFaviconLargerThanSize(
+    faviconFiles: Array<Favicon>,
+    size: number,
+  ): Favicon | null {
+    const smallest = faviconFiles.reduce((smallest, current) => {
+      // If the current favicon is larger than the desired size and either we
+      // don't have a smallest favicon yet or the current one is smaller than
+      // the smallest one we've found so far
+      return current.width > size &&
+        (!smallest || current.width < smallest.width)
+        ? current
+        : smallest;
+    }, null);
+
+    return (
+      smallest ?? ImageManipulation.getLargestFaviconFile(faviconFiles, size)
+    );
+  }
+
   static async convertFaviconFileToPngAndResize(
     faviconFile: Favicon,
     size: number,
