@@ -28,7 +28,7 @@ export class ImageManipulation {
       // If the current favicon is larger than the desired size and either we
       // don't have a smallest favicon yet or the current one is smaller than
       // the smallest one we've found so far
-      return current.width > size &&
+      return current.width >= size &&
         (!smallest || current.width < smallest.width)
         ? current
         : smallest;
