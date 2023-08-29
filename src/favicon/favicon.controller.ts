@@ -3,6 +3,7 @@ import { FaviconService } from './favicon.service';
 import { Response } from 'express';
 import { DEFAULT_SIZE, SUPPORTED_SIZES } from './favicon.constants';
 import { Readable } from 'stream';
+import { Domain } from './utils/domain';
 
 @Controller()
 export class FaviconController {
@@ -35,7 +36,7 @@ export class FaviconController {
   ) {
     const domainName = params.domainName;
     const size = params.size ?? DEFAULT_SIZE;
-    if (!this.checkDomainIsValid(domainName)) {
+    if (!Domain.checkDomainIsValid(domainName)) {
       return res.status(400).send('Invalid domain');
     }
     if (!this.checkSizeIsValid(+size)) {
@@ -72,12 +73,6 @@ export class FaviconController {
       'Content-Type': 'image/png',
     });
     return favicon.pipe(res);
-  }
-
-  public checkDomainIsValid(domainName: string) {
-    const domainPattern =
-      /^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$/;
-    return domainPattern.test(domainName);
   }
 
   public checkSizeIsValid(size: number) {

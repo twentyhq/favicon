@@ -1030,6 +1030,13 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.46.0.tgz#3f7802972e8b6fe3f88ed1aabc74ec596c456db6"
   integrity sha512-a8TLtmPi8xzPkCbp/OGFUo5yhRkHM2Ko9kOWP4znJr0WAhWyThaw3PnwX4vOTWOAMsV2uRt32PPDcEz63esSaA==
 
+"@golevelup/nestjs-discovery@4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@golevelup/nestjs-discovery/-/nestjs-discovery-4.0.0.tgz#3428f0b620b51e4d425bc9e41cc8f2f338472dc1"
+  integrity sha512-iyZLYip9rhVMR0C93vo860xmboRrD5g5F5iEOfpeblGvYSz8ymQrL9RAST7x/Fp3n+TAXSeOLzDIASt+rak68g==
+  dependencies:
+    lodash "^4.17.21"
+
 "@humanwhocodes/config-array@^0.11.10":
   version "0.11.10"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.10.tgz#5a3ffe32cc9306365fb3fd572596cd602d5e12d2"
@@ -2962,6 +2969,11 @@ combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
+commander@11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-11.0.0.tgz#43e19c25dbedc8256203538e8d7e9346877a6f67"
+  integrity sha512-9HMlXtt/BNoYr8ooyjjNRdIilOTkVJXB+GhxMTtOKwk0R4j4lS4NpjuqmRxroBfnfTSHQIHQB7wryHhXarNjmQ==
+
 commander@4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-4.1.1.tgz#9fd602bd936294e9e9ef46a3f4d6964044b18068"
@@ -3057,6 +3069,16 @@ cors@2.8.5:
   dependencies:
     object-assign "^4"
     vary "^1"
+
+cosmiconfig@8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-8.2.0.tgz#f7d17c56a590856cd1e7cee98734dca272b0d8fd"
+  integrity sha512-3rTMnFJA1tCOPwRxtgF4wd7Ab2qvDbL8jX+3smjIbS4HlZBagTlpERbdN7iAbWlrfxE3M8c27kTwTawQ7st+OQ==
+  dependencies:
+    import-fresh "^3.2.1"
+    js-yaml "^4.1.0"
+    parse-json "^5.0.0"
+    path-type "^4.0.0"
 
 cosmiconfig@^7.0.1:
   version "7.1.0"
@@ -4953,6 +4975,16 @@ neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
+
+nest-commander@^3.11.1:
+  version "3.11.1"
+  resolved "https://registry.yarnpkg.com/nest-commander/-/nest-commander-3.11.1.tgz#59a20e64a77439b9278f865db110e069947e18b6"
+  integrity sha512-BuuuYx7EyGsfiGRiRNPVFE8ScrspDO1zfnf+nqaYv2M2VnjApXIItxesyLEyeqMO3vLECO2bbZLY9uXDoS+3Zg==
+  dependencies:
+    "@golevelup/nestjs-discovery" "4.0.0"
+    commander "11.0.0"
+    cosmiconfig "8.2.0"
+    inquirer "8.2.5"
 
 node-abi@^3.3.0:
   version "3.45.0"
