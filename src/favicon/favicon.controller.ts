@@ -62,7 +62,7 @@ export class FaviconController {
       return this.returnWithComputedResponseContentType(res, newFavicon);
     }
 
-    return res.status(400).send('Could not fetch favicon');
+    return res.status(404).send('Could not fetch favicon');
   }
 
   private returnWithComputedResponseContentType(

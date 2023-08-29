@@ -60,7 +60,7 @@ export class FaviconService {
       const alternativeUrl = `https://www.${domainName}`;
       faviconsFromSubDomain = await this.getFaviconFromSubDomain(
         alternativeUrl,
-      );
+      ).catch(() => []);
     }
 
     if (faviconsFromSubDomain.length == 0) {
