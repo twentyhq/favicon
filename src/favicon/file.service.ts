@@ -36,4 +36,8 @@ export class FileService {
       filename: `${size}.png`,
     });
   }
+
+  async listFiles(chunkSize: number, olderThan: Date) {
+    return this.fileStorage.listFiles(chunkSize, olderThan);
+  }
 }

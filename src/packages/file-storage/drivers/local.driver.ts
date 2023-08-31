@@ -1,9 +1,13 @@
 import * as fs from 'fs/promises';
-import { createReadStream, existsSync } from 'fs';
+import { PathLike, createReadStream, existsSync, readdir, stat } from 'fs';
 import { join, dirname } from 'path';
 import { Readable } from 'stream';
+import { promisify } from 'util';
 
 import { StorageDriver } from './interfaces/storage-driver.interface';
+
+const readdirAsync = promisify(readdir);
+const statAsync = promisify(stat);
 
 export interface LocalDriverOptions {
   storagePath: string;
@@ -56,5 +60,28 @@ export class LocalDriver implements StorageDriver {
     }
 
     return createReadStream(filePath);
+  }
+
+  async getDomains(path: PathLike) {
+    const dirents = await readdirAsync(path, { withFileTypes: true });
+    const domainStats = await Promise.all(
+      dirents.map(async (dirent) => {
+        const { name, path: domainPath } = dirent;
+        const createdAt = (await statAsync(join(domainPath, name))).birthtime;
+        return { name, createdAt };
+      }),
+    );
+    return domainStats;
+  }
+
+  async listFiles(chunkSize: number, olderThan: Date) {
+    const path = join(`${this.options.storagePath}`, 'favicon');
+    // We cannot actually chunk reads to a local directory
+    const allDomains = await this.getDomains(path);
+    const filteredDomains = allDomains.filter(
+      ({ createdAt }) => createdAt < olderThan,
+    );
+
+    return filteredDomains.slice(0, chunkSize).map(({ name }) => name);
   }
 }

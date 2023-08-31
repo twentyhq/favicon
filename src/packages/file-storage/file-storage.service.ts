@@ -22,4 +22,8 @@ export class FileStorageService implements StorageDriver {
   read(params: { folderPath: string; filename: string }): Promise<Readable> {
     return this.driver.read(params);
   }
+
+  listFiles(chunkSize: number, olderThan: Date) {
+    return this.driver.listFiles(chunkSize, olderThan);
+  }
 }

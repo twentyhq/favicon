@@ -13,6 +13,6 @@ import { GoogleFaviconUrlFetcher } from './url-fetcher/google-favicon.url-fetche
     HtmlUrlFetcher,
     GoogleFaviconUrlFetcher,
   ],
-  exports: [FaviconService],
+  exports: [FaviconService, FileService],
 })
 export class FaviconModule {}
