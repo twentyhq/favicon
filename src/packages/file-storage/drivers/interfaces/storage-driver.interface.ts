@@ -8,4 +8,5 @@ export interface StorageDriver {
     folder: string;
     mimeType: string | undefined;
   }): Promise<void>;
+  listFiles(chunkSize: number, olderThan: Date): Promise<string[]>;
 }

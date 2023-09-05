@@ -8,6 +8,8 @@ import {
   PutObjectCommand,
   S3,
   S3ClientConfig,
+  ListObjectsV2Command,
+  _Object,
 } from '@aws-sdk/client-s3';
 
 import { StorageDriver } from './interfaces/storage-driver.interface';
@@ -98,5 +100,48 @@ export class S3Driver implements StorageDriver {
     }
 
     return this.s3Client.createBucket(args);
+  }
+
+  async getOlderObjects(bucket: string, olderThan: Date, chunkSize = 1000) {
+    let isTruncated = true;
+    let marker: string;
+    const olderObjects: _Object[] = [];
+
+    while (isTruncated && olderObjects.length < chunkSize) {
+      const command = new ListObjectsV2Command({
+        MaxKeys: chunkSize,
+        Bucket: bucket,
+        ...(marker && { ContinuationToken: marker }),
+      });
+
+      const response = await this.s3Client.send(command);
+      const filteredObjects = response.Contents.filter(
+        (item) => item.LastModified < olderThan,
+      );
+
+      filteredObjects.forEach((item) => {
+        if (olderObjects.length < chunkSize) {
+          olderObjects.push(item);
+        }
+      });
+
+      isTruncated = response.IsTruncated;
+      marker = response.NextContinuationToken;
+    }
+
+    return olderObjects;
+  }
+
+  async listFiles(chunkSize: number, olderThan: Date) {
+    const files = await this.getOlderObjects(
+      this.bucketName,
+      olderThan,
+      chunkSize,
+    );
+
+    const domains = files.map(({ Key }) => Key.split('/')[1]);
+    const uniqueDomains = [...new Set(domains)];
+
+    return uniqueDomains;
   }
 }
