@@ -27,6 +27,7 @@
     "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/schedule": "^3.0.3",
     "axios": "^1.4.0",
     "axios-curlirize": "^2.0.0",
     "cheerio": "^1.0.0-rc.12",
