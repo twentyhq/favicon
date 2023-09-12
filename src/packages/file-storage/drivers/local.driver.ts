@@ -67,8 +67,8 @@ export class LocalDriver implements StorageDriver {
     const domainStats = await Promise.all(
       dirents.map(async (dirent) => {
         const { name, path: domainPath } = dirent;
-        const createdAt = (await statAsync(join(domainPath, name))).birthtime;
-        return { name, createdAt };
+        const changedAt = (await statAsync(join(domainPath, name))).ctime;
+        return { name, changedAt };
       }),
     );
     return domainStats;
@@ -79,7 +79,7 @@ export class LocalDriver implements StorageDriver {
     // We cannot actually chunk reads to a local directory
     const allDomains = await this.getDomains(path);
     const filteredDomains = allDomains.filter(
-      ({ createdAt }) => createdAt < olderThan,
+      ({ changedAt }) => changedAt < olderThan,
     );
 
     return filteredDomains.slice(0, chunkSize).map(({ name }) => name);
