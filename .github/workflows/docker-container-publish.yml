@@ -33,5 +33,5 @@ jobs:
           sbom: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: latest
+          tags: ${{ github.repository_owner }}/favicon:latest
           platforms: linux/amd64
