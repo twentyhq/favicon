@@ -33,7 +33,7 @@ jobs:
           sbom: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: latest
           platforms: |
             linux/amd64
             linux/arm64
