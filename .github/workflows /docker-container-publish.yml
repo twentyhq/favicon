@@ -32,7 +32,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: ./deploy/prod
+          context: ./deploy/prod/
           push: true
           provenance: true
           sbom: true
