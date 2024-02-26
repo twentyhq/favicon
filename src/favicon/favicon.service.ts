@@ -10,6 +10,7 @@ import { UrlFetcher } from './url-fetcher/interfaces/url-fetcher.interface';
 import { SUPPORTED_SIZES } from './favicon.constants';
 import { Favicon } from './interfaces/favicon.interface';
 import { ImageManipulation } from './utils/image-manipulation';
+import icoToPng from 'ico-to-png';
 
 @Injectable()
 export class FaviconService {
@@ -86,7 +87,6 @@ export class FaviconService {
 
       faviconUrls = [...faviconUrls, ...fetchedFaviconUrls];
     }
-    console.log(faviconUrls);
 
     const faviconFiles: Array<Favicon> = [];
     const faviconFetchPromises = faviconUrls.map((url): Promise<Favicon> => {
@@ -147,14 +147,18 @@ export class FaviconService {
 
     let buffer = Buffer.from(response.data, 'utf-8');
     if (ImageManipulation.isIcoFile(buffer)) {
-      buffer = await sharp(buffer)
-        .resize({
-          width: 128,
-          height: 128,
-          fit: sharp.fit.fill,
-        })
-        .toFormat('png')
-        .toBuffer();
+      try {
+        buffer = await sharp(buffer)
+          .resize({
+            width: 128,
+            height: 128,
+            fit: sharp.fit.fill,
+          })
+          .toFormat('png')
+          .toBuffer();
+      } catch (error) {
+        buffer = await icoToPng(buffer, 128);
+      }
     }
     const bufferMetadata = await sharp(buffer).metadata();
 
