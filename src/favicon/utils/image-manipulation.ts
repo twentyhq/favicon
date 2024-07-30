@@ -63,6 +63,23 @@ export class ImageManipulation {
     return buffer.subarray(0, 4).equals(icoSignature);
   }
 
+  static isSVGFile(buffer: Buffer): boolean {
+    const svgTag = '<svg';
+    const bufferAsString = buffer.toString(
+      'utf-8',
+      0,
+      Math.min(buffer.length, 100),
+    );
+    return bufferAsString.includes(svgTag);
+  }
+
+  static isPNGFile(buffer: Buffer): boolean {
+    const pngSignature = Buffer.from([
+      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+    ]);
+    return buffer.subarray(0, 8).equals(pngSignature);
+  }
+
   static isAlmostSquare(favicon: Favicon): boolean {
     if (favicon.height === 0 || favicon.width === 0) {
       return false;
