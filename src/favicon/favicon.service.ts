@@ -146,7 +146,11 @@ export class FaviconService {
     });
 
     let buffer = Buffer.from(response.data, 'utf-8');
-    if (ImageManipulation.isIcoFile(buffer)) {
+    if (
+      ImageManipulation.isIcoFile(buffer) ||
+      ImageManipulation.isSVGFile(buffer) ||
+      ImageManipulation.isPNGFile(buffer)
+    ) {
       try {
         buffer = await sharp(buffer)
           .resize({
