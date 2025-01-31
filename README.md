@@ -16,10 +16,10 @@
 
 ## Usage
 
-Looking for a company logo? Just fetch it from [https://favicon.twenty.com/airbnb.com](https://favicon.twenty.com/airbnb.com)
-For example, if you're looking to display the Apple logo on your website, you can use: `<img src="https://favicon.twenty.com/apple.com" alt="Logo" />`
+Looking for a company logo? Just fetch it from [https://twenty-icons.com/airbnb.com](https://twenty-icons.com/airbnb.com)
+For example, if you're looking to display the Apple logo on your website, you can use: `<img src="https://twenty-icons.com/apple.com" alt="Logo" />`
 
-You can also specify a size with an optional parameter [https://favicon.twenty.com/github.com/128](https://favicon.twenty.com/github.com/128).
+You can also specify a size with an optional parameter [https://twenty-icons.com/github.com/128](https://twenty-icons.com/github.com/128).
 We support and store `[16x16, 32x32, 64x64, 128x128, 180x180, 192x192]` sizes.
 If no size is specified, the highest available supported size will be used.
 
