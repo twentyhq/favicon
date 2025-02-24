@@ -23,6 +23,10 @@ You can also specify a size with an optional parameter [https://twenty-icons.com
 We support and store `[16x16, 32x32, 64x64, 128x128, 180x180, 192x192]` sizes.
 If no size is specified, the highest available supported size will be used.
 
+If a domain does not have a favicon, you can **force a placeholder favicon** by adding `?withFallbackPlaceholder=true` to the URL.
+For example, if you're looking to display a placeholder favicon for `example.com`, you can use
+<img src="https://twenty-icons.com/example.com/64?withFallbackPlaceholder=true" alt="Favicon" />
+
 ## Example
 
 There are many other use-cases, mostly for B2B companies.
@@ -166,7 +170,7 @@ For scalable and robust storage, the application also integrates with Amazon S3.
 To configure Amazon S3 as your storage preference:
 
 1. Modify the `STORAGE_TYPE` variable in the `.env` file to reflect `s3`.
-   
+
 2. Populate the Amazon S3-specific environment variables in the `.env` file:
 
    ```env

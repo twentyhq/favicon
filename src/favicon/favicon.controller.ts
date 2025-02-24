@@ -62,6 +62,10 @@ export class FaviconController {
       return this.returnWithComputedResponseContentType(res, newFavicon);
     }
 
+    if (res.req.query.withFallbackPlaceholder) {
+      return res.redirect('https://i.imghippo.com/files/bri9020Qc.png');
+    }
+
     return res.status(404).send('Could not fetch favicon');
   }
 
