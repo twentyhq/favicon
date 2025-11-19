@@ -28,7 +28,7 @@
     "@nestjs/core": "^11.1.9",
     "@nestjs/platform-express": "^11.1.9",
     "@nestjs/schedule": "^6.0.1",
-    "axios": "^1.4.0",
+    "axios": "^1.12.0",
     "axios-curlirize": "^2.0.0",
     "cheerio": "^1.0.0-rc.12",
     "class-transformer": "^0.5.1",
