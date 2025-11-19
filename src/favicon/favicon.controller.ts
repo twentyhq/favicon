@@ -29,9 +29,9 @@ export class FaviconController {
     return;
   }
 
-  @Get(':domainName/:size?')
+  @Get(':domainName{/:size}')
   async getFaviconWithSize(
-    @Param() params: { domainName: string; size: string },
+    @Param() params: { domainName: string; size?: string },
     @Res() res: Response,
   ) {
     const domainName = params.domainName;

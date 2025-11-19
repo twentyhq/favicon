@@ -66,8 +66,9 @@ export class LocalDriver implements StorageDriver {
     const dirents = await readdirAsync(path, { withFileTypes: true });
     const domainStats = await Promise.all(
       dirents.map(async (dirent) => {
-        const { name, path: domainPath } = dirent;
-        const changedAt = (await statAsync(join(domainPath, name))).ctime;
+        const { name } = dirent;
+        const domainPath = join(path.toString(), name);
+        const changedAt = (await statAsync(domainPath)).ctime;
         return { name, changedAt };
       }),
     );
