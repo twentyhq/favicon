@@ -2264,13 +2264,6 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.4.tgz#0b92dcc0cc1c81f6f306a381f28e31b1a56536e9"
   integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
 
-"@types/axios@^0.14.0":
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/@types/axios/-/axios-0.14.0.tgz#ec2300fbe7d7dddd7eb9d3abf87999964cafce46"
-  integrity sha512-KqQnQbdYE54D7oa/UmYVMZKq7CO4l8DEENzOKc4aBRwxCXSlJXGz83flFx5L7AWrOQnmuN3kVsRdt+GZPPjiVQ==
-  dependencies:
-    axios "*"
-
 "@types/babel__core@^7.1.14":
   version "7.20.1"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.20.1.tgz#916ecea274b0c776fec721e333e55762d3a9614b"
@@ -2947,10 +2940,10 @@ axios-curlirize@^2.0.0:
   resolved "https://registry.yarnpkg.com/axios-curlirize/-/axios-curlirize-2.0.0.tgz#c63eedac2c18ef5591371d7658b733cacd2e731a"
   integrity sha512-TrQBa8MfIwaYsrCoYhfCr7NDRXLuGm+Rqh/PtAuO64b8PCCOJWn37BWQvpN4/mzzig3uHb4qXzvpxJmALHaiwA==
 
-axios@*, axios@^1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.12.0.tgz#11248459be05a5ee493485628fa0e4323d0abfc3"
-  integrity sha512-oXTDccv8PcfjZmPGlWsPSwtOJCZ/b6W5jAMCNcfwJbCzDckwG0jrYJFaWH1yvivfCXjVzV/SPDEhMB3Q+DSurg==
+axios@^1.13.2:
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.13.2.tgz#9ada120b7b5ab24509553ec3e40123521117f687"
+  integrity sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==
   dependencies:
     follow-redirects "^1.15.6"
     form-data "^4.0.4"
