@@ -59,7 +59,7 @@ export class ImageManipulation {
   }
 
   static isIcoFile(buffer: Buffer): boolean {
-    const icoSignature = Buffer.from([0, 0, 1, 0]); // The first four bytes of ICO format
+    const icoSignature = Uint8Array.from([0, 0, 1, 0]); // The first four bytes of ICO format
     return buffer.subarray(0, 4).equals(icoSignature);
   }
 
@@ -74,7 +74,7 @@ export class ImageManipulation {
   }
 
   static isPNGFile(buffer: Buffer): boolean {
-    const pngSignature = Buffer.from([
+    const pngSignature = Uint8Array.from([
       0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
     ]);
     return buffer.subarray(0, 8).equals(pngSignature);

@@ -145,7 +145,7 @@ export class FaviconService {
       responseType: 'arraybuffer',
     });
 
-    let buffer = Buffer.from(response.data, 'utf-8');
+    let buffer = Buffer.from(response.data);
     if (
       ImageManipulation.isIcoFile(buffer) ||
       ImageManipulation.isSVGFile(buffer) ||

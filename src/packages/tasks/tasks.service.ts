@@ -12,6 +12,6 @@ export class TasksService {
     this.logger.debug('Updating oldest domains');
     await this.domainCommandService
       .refetchOldestDomains()
-      .catch(this.logger.error);
+      .catch((error) => this.logger.error(error));
   }
 }
