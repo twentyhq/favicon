@@ -29,7 +29,16 @@ There are many other use-cases, mostly for B2B companies.
 For example if you are a SaaS you could look at the domain when someone signups and automatically set their workspace logo based on that.
 
 In our case, we built it because we needed it for our CRM [Twenty](https://github.com/twentyhq/twenty):
-[![Twenty](https://raw.githubusercontent.com/twentyhq/twenty/main/docs/static/img/preview-light.png)](https://github.com/twentyhq/twenty)
+
+<p align="center">
+  <a href="https://github.com/twentyhq/twenty">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/preview-dark.png">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/preview-light.png">
+      <img src="https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/preview-light.png" alt="Companies view" />
+    </picture>
+  </a>
+</p>
 
 ## Features
 
