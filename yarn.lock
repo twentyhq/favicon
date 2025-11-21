@@ -3136,11 +3136,11 @@ __metadata:
   linkType: hard
 
 "@types/cheerio@npm:^0.22.31":
-  version: 0.22.31
-  resolution: "@types/cheerio@npm:0.22.31"
+  version: 0.22.35
+  resolution: "@types/cheerio@npm:0.22.35"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10c0/f16e9e67e3af530c3603b4b9f7651b9223ca72944afccaa31dd39be858a90bd48d5206d36b05998a0389fedca158f22430f96796007000f34b2dd8dd6b193f6e
+  checksum: 10c0/648552e6b981185220b356634374aacdee31815ee55c9a6776bcbf7f8c217e54a3a3951d9929b403ca637190ba748f884e6126c730238c5704bf4488a47dedae
   languageName: node
   linkType: hard
 
