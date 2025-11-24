@@ -6196,13 +6196,13 @@ __metadata:
   linkType: hard
 
 "ico-to-png@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "ico-to-png@npm:0.2.1"
+  version: 0.2.2
+  resolution: "ico-to-png@npm:0.2.2"
   dependencies:
     decode-ico: "npm:^0.4.0"
     lodepng: "npm:^2.0.0"
     resize-image-data: "npm:^0.3.0"
-  checksum: 10c0/bd912f5cc487aab25a121755dca4201c4450e74fdceac9e5d5b8c57ff6881366d248952bef4f71d20c32250c9b3cdf453e2e5a21fded0534dabfb5046104dd9d
+  checksum: 10c0/e86034624b25147109c3a1ee863879a52e48f37df90fceff1e14e39d5459b2ca1b3f8ebb004551c68d5b7343bccbeb0b6a8cae80eaa50be8d5567278b8cce6d5
   languageName: node
   linkType: hard
 
