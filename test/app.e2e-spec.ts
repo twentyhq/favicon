@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { AppModule } from './../src/app.module';
 
 describe('AppController (e2e)', () => {
@@ -15,10 +15,21 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  afterEach(async () => {
+    await app.close();
+  });
+
+  it('/ (GET) should redirect to GitHub', () => {
     return request(app.getHttpServer())
       .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .expect(301)
+      .expect(
+        'Location',
+        'https://github.com/twentyhq/favicon/blob/main/README.md',
+      );
+  });
+
+  it('/health (GET) should return 200', () => {
+    return request(app.getHttpServer()).get('/health').expect(200);
   });
 });
