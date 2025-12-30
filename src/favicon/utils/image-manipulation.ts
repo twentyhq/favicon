@@ -89,4 +89,34 @@ export class ImageManipulation {
       favicon.width / favicon.height < 1.1
     );
   }
+
+  static isValidHexColor(color: string): boolean {
+    const hexColorPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+    return hexColorPattern.test(color);
+  }
+
+  static async generatePlaceholder(
+    domainName: string,
+    size: number,
+    backgroundColor: string,
+    textColor: string,
+  ): Promise<Buffer> {
+    const firstLetter = domainName.charAt(0).toUpperCase();
+    const fontSize = Math.floor(size * 0.75);
+
+    const svg = `
+      <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+        <rect width="${size}" height="${size}" fill="${backgroundColor}"/>
+        <text x="50%" y="50%" dy="0.35em" font-family="Arial, sans-serif" font-size="${fontSize}"
+              font-weight="900" fill="${textColor}" text-anchor="middle">
+          ${firstLetter}
+        </text>
+      </svg>
+    `;
+
+    return await sharp(Buffer.from(svg))
+      .resize(size, size)
+      .png()
+      .toBuffer();
+  }
 }
