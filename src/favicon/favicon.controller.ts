@@ -4,6 +4,7 @@ import { Response } from 'express';
 import { DEFAULT_SIZE, SUPPORTED_SIZES } from './favicon.constants';
 import { Readable } from 'stream';
 import { Domain } from './utils/domain';
+import { ImageManipulation } from './utils/image-manipulation';
 
 @Controller()
 export class FaviconController {
@@ -60,6 +61,28 @@ export class FaviconController {
 
     if (newFavicon) {
       return this.returnWithComputedResponseContentType(res, newFavicon);
+    }
+
+    if (res.req.query.placeholder) {
+      const backgroundColor = res.req.query.placeholder === 'true' ? '#999999' : String('#' + res.req.query.placeholder)
+      const textColor = res.req.query.placeholderText ? String('#' + res.req.query.placeholderText) : '#FFFFFF'
+
+      if (!ImageManipulation.isValidHexColor(backgroundColor)) {
+        return res.status(400).send('Invalid hexadecimal color for placeholder');
+      }
+      if (!ImageManipulation.isValidHexColor(textColor)) {
+        return res.status(400).send('Invalid hexadecimal color for placeholderText');
+      }
+
+      const placeholderBuffer = await ImageManipulation.generatePlaceholder(
+        params.domainName,
+        parseInt(size),
+        backgroundColor,
+        textColor
+      );
+
+      const placeholderStream = Readable.from(placeholderBuffer);
+      return this.returnWithComputedResponseContentType(res, placeholderStream);
     }
 
     return res.status(404).send('Could not fetch favicon');
