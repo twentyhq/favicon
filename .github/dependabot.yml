@@ -5,6 +5,5 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 3
-    versioning-strategy: "lockfile-only"
     assignees:
       - "mabdullahabaid"
