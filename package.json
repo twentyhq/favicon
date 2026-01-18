@@ -23,11 +23,11 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.967.0",
     "@aws-sdk/credential-providers": "^3.967.0",
-    "@nestjs/common": "^11.1.9",
+    "@nestjs/common": "^11.1.12",
     "@nestjs/config": "^4.0.2",
-    "@nestjs/core": "^11.1.9",
+    "@nestjs/core": "^11.1.12",
     "@nestjs/platform-express": "^11.1.12",
-    "@nestjs/schedule": "^6.0.1",
+    "@nestjs/schedule": "^6.1.0",
     "axios": "^1.13.2",
     "axios-curlirize": "^2.0.0",
     "cheerio": "^1.0.0-rc.12",
@@ -42,9 +42,9 @@
     "url": "^0.11.4"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.11",
+    "@nestjs/cli": "^11.0.16",
     "@nestjs/schematics": "^11.0.9",
-    "@nestjs/testing": "^11.1.9",
+    "@nestjs/testing": "^11.1.12",
     "@types/cheerio": "^0.22.31",
     "@types/express": "^4.17.17",
     "@types/inquirer": "^8.1.3",
