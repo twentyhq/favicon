@@ -26,7 +26,7 @@
     "@nestjs/common": "^11.1.9",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.9",
-    "@nestjs/platform-express": "^11.1.9",
+    "@nestjs/platform-express": "^11.1.12",
     "@nestjs/schedule": "^6.0.1",
     "axios": "^1.13.2",
     "axios-curlirize": "^2.0.0",
