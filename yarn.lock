@@ -3408,15 +3408,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cheerio@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@types/cheerio@npm:1.0.0"
-  dependencies:
-    cheerio: "npm:*"
-  checksum: 10c0/6290af8750586d2b97532c177c99c2814a498b0848a42dc4505dc9dce425578fa02897775fa70444e4beae2957fd9d9f1fdc3924301f563ba0a49e048c3c7263
-  languageName: node
-  linkType: hard
-
 "@types/connect@npm:*":
   version: 3.4.35
   resolution: "@types/connect@npm:3.4.35"
@@ -4689,7 +4680,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cheerio@npm:*, cheerio@npm:^1.1.2":
+"cheerio@npm:^1.1.2":
   version: 1.1.2
   resolution: "cheerio@npm:1.1.2"
   dependencies:
@@ -5943,7 +5934,6 @@ __metadata:
     "@nestjs/schedule": "npm:^6.1.0"
     "@nestjs/schematics": "npm:^11.0.9"
     "@nestjs/testing": "npm:^11.1.12"
-    "@types/cheerio": "npm:^1.0.0"
     "@types/express": "npm:^4.17.17"
     "@types/inquirer": "npm:^8.1.3"
     "@types/jest": "npm:^29.5.2"
