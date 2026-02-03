@@ -1,3 +1,6 @@
+# syntax=docker/dockerfile:1
+# check=error=true
+
 FROM node:24-alpine AS server
 
 WORKDIR /app
