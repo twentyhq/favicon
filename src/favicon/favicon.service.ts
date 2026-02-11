@@ -160,7 +160,7 @@ export class FaviconService {
           })
           .toFormat('png')
           .toBuffer();
-      } catch (error) {
+      } catch {
         buffer = await icoToPng(buffer, 128);
       }
     }
