@@ -6289,7 +6289,7 @@ __metadata:
     sharp: "npm:^0.33.4"
     source-map-support: "npm:^0.5.21"
     supertest: "npm:^7.2.2"
-    ts-jest: "npm:^29.1.0"
+    ts-jest: "npm:^29.4.6"
     ts-node: "npm:^10.9.1"
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:^5.9.3"
@@ -9657,7 +9657,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^29.1.0":
+"ts-jest@npm:^29.4.6":
   version: 29.4.6
   resolution: "ts-jest@npm:29.4.6"
   dependencies:
