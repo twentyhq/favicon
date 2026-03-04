@@ -11,7 +11,6 @@ export class FaviconController {
 
   @Get()
   @Redirect('https://github.com/twentyhq/favicon/blob/main/README.md', 301)
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   redirectToReadme() {}
 
   @Get('/health')

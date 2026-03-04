@@ -42,6 +42,7 @@
     "url": "^0.11.4"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
     "@nestjs/cli": "^11.0.16",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.12",
@@ -52,9 +53,10 @@
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^8.56.0",
     "@typescript-eslint/parser": "^8.56.0",
-    "eslint": "^8.57.0",
+    "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
+    "globals": "^15.0.0",
     "jest": "^30.2.0",
     "prettier": "^3.8.1",
     "source-map-support": "^0.5.21",
