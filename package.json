@@ -38,7 +38,7 @@
     "nest-commander": "^3.20.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "sharp": "^0.33.4",
+    "sharp": "^0.34.5",
     "url": "^0.11.4"
   },
   "devDependencies": {
