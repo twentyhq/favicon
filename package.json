@@ -23,10 +23,10 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.998.0",
     "@aws-sdk/credential-providers": "^3.998.0",
-    "@nestjs/common": "^11.1.12",
+    "@nestjs/common": "^11.1.17",
     "@nestjs/config": "^4.0.3",
-    "@nestjs/core": "^11.1.12",
-    "@nestjs/platform-express": "^11.1.12",
+    "@nestjs/core": "^11.1.17",
+    "@nestjs/platform-express": "^11.1.17",
     "@nestjs/schedule": "^6.1.0",
     "axios": "^1.13.5",
     "axios-curlirize": "^2.0.0",
