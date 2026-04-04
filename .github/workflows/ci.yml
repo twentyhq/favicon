@@ -1,21 +1,42 @@
+---
 name: CI
 
 on:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      use_cache:
+        description: "Use Docker build cache"
+        required: true
+        type: boolean
+        default: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   test:
     name: Test & Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
 
@@ -39,3 +60,63 @@ jobs:
 
       - name: Run e2e tests
         run: yarn test:e2e
+  
+  docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+      
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          labels: |
+            org.opencontainers.image.title=Favicon
+            org.opencontainers.image.description=100% free and open-source favicon provider
+            org.opencontainers.image.licenses=MIT
+            org.opencontainers.image.source=https://github.com/twentyhq/favicon
+          annotations: |
+            org.opencontainers.image.title=Favicon
+            org.opencontainers.image.description=100% free and open-source favicon provider
+            org.opencontainers.image.licenses=MIT
+            org.opencontainers.image.source=https://github.com/twentyhq/favicon
+      
+      # Build and push Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/prod/Dockerfile
+          # Can't do more platforms efficiently until Dockerfile allow cross-compilation of node-gyp modules
+          platforms: linux/amd64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          no-cache: ${{ (github.event_name == 'workflow_dispatch' && !inputs.use_cache) || startsWith(github.ref, 'refs/tags/') }}
