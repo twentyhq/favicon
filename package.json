@@ -56,7 +56,7 @@
     "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
-    "globals": "^15.0.0",
+    "globals": "^17.4.0",
     "jest": "^30.3.0",
     "prettier": "^3.8.1",
     "source-map-support": "^0.5.21",
