@@ -66,6 +66,10 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3"
   },
+  "resolutions": {
+    "@nestjs/platform-express/multer": "2.2.0"
+  },
+  "//resolutions": "Each entry forces a version OUTSIDE some parent's declared range where no fixed upstream release exists; drop each once its blocker ships. @nestjs/platform-express/multer 2.2.0 -> GHSA-72gw-mp4g-v24j / CVE-2026-5079 (high, DoS via deeply nested field names) & GHSA-3p4h-7m6x-2hcm / CVE-2026-5038 (medium, DoS via incomplete cleanup of aborted uploads), both vulnerable <2.2.0; @nestjs/platform-express hard-pins multer 2.1.1 exact (no caret, still 2.1.1 in latest 11.1.27, 12.0 alpha-only) so no parent upgrade carries the fix; scoped to @nestjs/platform-express as multer's sole consumer; drop once @nestjs/platform-express depends on multer >=2.2.0.",
   "jest": {
     "moduleFileExtensions": [
       "js",
