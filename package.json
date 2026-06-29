@@ -67,9 +67,10 @@
     "typescript": "^5.9.3"
   },
   "resolutions": {
-    "@nestjs/platform-express/multer": "2.2.0"
+    "@nestjs/platform-express/multer": "2.2.0",
+    "@istanbuljs/load-nyc-config/js-yaml": "4.2.0"
   },
-  "//resolutions": "Each entry forces a version OUTSIDE some parent's declared range where no fixed upstream release exists; drop each once its blocker ships. @nestjs/platform-express/multer 2.2.0 -> GHSA-72gw-mp4g-v24j / CVE-2026-5079 (high, DoS via deeply nested field names) & GHSA-3p4h-7m6x-2hcm / CVE-2026-5038 (medium, DoS via incomplete cleanup of aborted uploads), both vulnerable <2.2.0; @nestjs/platform-express hard-pins multer 2.1.1 exact (no caret, still 2.1.1 in latest 11.1.27, 12.0 alpha-only) so no parent upgrade carries the fix; scoped to @nestjs/platform-express as multer's sole consumer; drop once @nestjs/platform-express depends on multer >=2.2.0.",
+  "//resolutions": "Each entry forces a version OUTSIDE some parent's declared range where no fixed upstream release exists; drop each once its blocker ships. @nestjs/platform-express/multer 2.2.0 -> GHSA-72gw-mp4g-v24j / CVE-2026-5079 (high, DoS via deeply nested field names) & GHSA-3p4h-7m6x-2hcm / CVE-2026-5038 (medium, DoS via incomplete cleanup of aborted uploads), both vulnerable <2.2.0; @nestjs/platform-express hard-pins multer 2.1.1 exact (no caret, still 2.1.1 in latest 11.1.27, 12.0 alpha-only) so no parent upgrade carries the fix; scoped to @nestjs/platform-express as multer's sole consumer; drop once @nestjs/platform-express depends on multer >=2.2.0. @istanbuljs/load-nyc-config/js-yaml 4.2.0 -> GHSA-h67p-54hq-rp68 / CVE-2026-53550 (medium, js-yaml quadratic-complexity DoS in YAML merge-key handling, vulnerable <=4.1.1); @istanbuljs/load-nyc-config (EOL, latest 1.1.0) declares js-yaml ^3.13.1 -> 3.14.2 so no parent upgrade carries the fix; it is the sole remaining js-yaml 3.x consumer and calls only yaml.load (present and API-compatible in 4.x, unlike the removed safeLoad) so forcing 4.2.0 is safe; scoped to @istanbuljs/load-nyc-config; drop once it depends on js-yaml >=4.2.0 or leaves the babel-plugin-istanbul chain.",
   "jest": {
     "moduleFileExtensions": [
       "js",
