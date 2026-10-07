@@ -83,9 +83,13 @@ export class FaviconService {
     ];
 
     for (const strategy of strategies) {
-      const fetchedFaviconUrls = await strategy.fetchFaviconUrls(domainName);
+      try {
+        const fetchedFaviconUrls = await strategy.fetchFaviconUrls(domainName);
 
-      faviconUrls = [...faviconUrls, ...fetchedFaviconUrls];
+        faviconUrls = [...faviconUrls, ...fetchedFaviconUrls];
+      } catch {
+        continue;
+      }
     }
 
     const faviconFiles: Array<Favicon> = [];
