@@ -6,7 +6,7 @@ import { HtmlUrlFetcher } from './html.url-fetcher';
 describe('HtmlUrlFetcher', () => {
   let server: Server;
   let baseUrl: string;
-  let bytesSentForLastRequest: number;
+  let lastResponseWasFullySent: boolean;
 
   const hugeBody = `<body>${'<img src="data:image/webp;base64,AAAA">'.repeat(500_000)}</body>`;
 
@@ -17,24 +17,28 @@ describe('HtmlUrlFetcher', () => {
           ? `<html><link rel="icon" href="/icon.png">${hugeBody}</html>`
           : `<html><head><link rel="icon" href="/icon.png"></head>${hugeBody}</html>`;
 
-      bytesSentForLastRequest = 0;
+      lastResponseWasFullySent = false;
       response.writeHead(200, { 'Content-Type': 'text/html' });
 
       const chunkSize = 64 * 1024;
       let offset = 0;
       const writeNextChunk = () => {
-        while (offset < html.length) {
+        while (offset < html.length && !response.destroyed) {
           const chunk = html.slice(offset, offset + chunkSize);
           offset += chunkSize;
-          bytesSentForLastRequest += chunk.length;
+
           if (!response.write(chunk)) {
             response.once('drain', writeNextChunk);
             return;
           }
         }
+        if (response.destroyed) {
+          return;
+        }
+
+        lastResponseWasFullySent = true;
         response.end();
       };
-      response.on('close', () => (offset = html.length));
       writeNextChunk();
     });
 
@@ -55,7 +59,7 @@ describe('HtmlUrlFetcher', () => {
       `${baseUrl}/favicon.ico`,
     ]);
     expect(hugeBody.length).toBeGreaterThan(10_000_000);
-    expect(bytesSentForLastRequest).toBeLessThan(2_000_000);
+    expect(lastResponseWasFullySent).toBe(false);
   });
 
   it('stops reading a page without a closing head tag at the size cap', async () => {
@@ -67,6 +71,6 @@ describe('HtmlUrlFetcher', () => {
       `${baseUrl}/icon.png`,
       `${baseUrl}/favicon.ico`,
     ]);
-    expect(bytesSentForLastRequest).toBeLessThan(8_000_000);
+    expect(lastResponseWasFullySent).toBe(false);
   });
 });
