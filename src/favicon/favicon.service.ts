@@ -7,7 +7,11 @@ import { FileService } from './file.service';
 import { HtmlUrlFetcher } from './url-fetcher/html.url-fetcher';
 import { GoogleFaviconUrlFetcher } from './url-fetcher/google-favicon.url-fetcher';
 import { UrlFetcher } from './url-fetcher/interfaces/url-fetcher.interface';
-import { SUPPORTED_SIZES } from './favicon.constants';
+import {
+  IMAGE_FETCH_TIMEOUT_IN_MS,
+  MAX_IMAGE_SIZE_IN_BYTES,
+  SUPPORTED_SIZES,
+} from './favicon.constants';
 import { Favicon } from './interfaces/favicon.interface';
 import { ImageManipulation } from './utils/image-manipulation';
 import icoToPng from 'ico-to-png';
@@ -136,6 +140,8 @@ export class FaviconService {
 
   private async getImageFromUrl(url: string): Promise<Favicon> {
     const response = await axios.get(url, {
+      timeout: IMAGE_FETCH_TIMEOUT_IN_MS,
+      maxContentLength: MAX_IMAGE_SIZE_IN_BYTES,
       headers: {
         Accept: '*/*',
         'Accept-Encoding': 'gzip, deflate, br',
