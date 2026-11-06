@@ -19,8 +19,8 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Install and enable Corepack
+        run: npm install --global corepack@0.36.0 && corepack enable
 
       - name: Setup Yarn
         run: corepack prepare yarn@4.11.0 --activate
