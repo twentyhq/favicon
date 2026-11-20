@@ -1,7 +1,13 @@
+import { isFQDN } from 'class-validator';
+
 export class Domain {
   static checkDomainIsValid(domainName: string) {
-    const domainPattern =
-      /^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$/;
-    return domainPattern.test(domainName);
+    return isFQDN(domainName, {
+      require_tld: true,
+      allow_underscores: false,
+      allow_trailing_dot: false,
+      allow_numeric_tld: false,
+      allow_wildcard: false,
+    });
   }
 }
