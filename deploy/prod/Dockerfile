@@ -1,9 +1,9 @@
-FROM node:24-alpine AS server
+FROM node:26-alpine AS server
 
 WORKDIR /app
 
-# Corepack ships with Node but is disabled by default inside the image.
-RUN corepack enable
+# Node 26 no longer includes Corepack.
+RUN npm install --global corepack@0.36.0 && corepack enable
 
 COPY package.json yarn.lock .yarnrc.yml ./
 

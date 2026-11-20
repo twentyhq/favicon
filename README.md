@@ -54,7 +54,7 @@ To set up and run the Favicon package locally, follow these steps.
 
 Before diving in, ensure your system is equipped with the following tools:
 
-- **Node.js 24.5.0**: Required for running the project (use `.nvmrc` for quick setup).
+- **Node.js 26.13.0**: Required for running the project (use `.nvmrc` for quick setup).
 - **Git**: Essential for version control and cloning the repository.
 - **Yarn**: A package manager for your dependencies (recommended over npm for this project).
 
