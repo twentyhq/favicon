@@ -92,7 +92,6 @@ export class FaviconService {
       faviconUrls = [...faviconUrls, ...fetchedFaviconUrls];
     }
 
-    const faviconFiles: Array<Favicon> = [];
     const faviconFetchPromises = faviconUrls.map((url): Promise<Favicon> => {
       return this.getImageFromUrl(url).catch((error) => {
         console.error(error);
@@ -100,11 +99,7 @@ export class FaviconService {
       });
     });
 
-    for (const promise of faviconFetchPromises) {
-      await new Promise((r) => setTimeout(r, 500));
-      const faviconFile = await promise;
-      faviconFiles.push(faviconFile);
-    }
+    const faviconFiles = await Promise.all(faviconFetchPromises);
 
     const uniquefaviconFiles = this.uniqueFaviconFiles(faviconFiles);
 
